@@ -42,7 +42,7 @@ workflows:
       - test:
           requires: 
            - build
-      - analyse
+      - analyse:
           requires: 
            - test
 
