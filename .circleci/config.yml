@@ -1,0 +1,38 @@
+version: 2.1
+## TestWhenOnFail  rollback attempt 1
+
+defaults: &defaults   ## anchor & aliases
+    docker:
+      - image: circleci/node:13.8.0
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+    - checkout
+    - npm run lint
+
+  test:
+    <<: *defaults
+    steps:
+    - checkout
+    - npm test
+  analyse:   
+    <<: *defaults
+    steps:
+    - checkout
+    - npm audit   
+        
+
+workflows:
+  BuildTestAnalyse-Jobs:
+    jobs:
+      - build
+      - test:
+          requirement: 
+            build
+      - analyse
+          requirement: 
+            test
+
+
