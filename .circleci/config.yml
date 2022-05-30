@@ -10,19 +10,30 @@ jobs:
     <<: *defaults
     steps:
     - checkout
-    - npm run lint
+    - run: npm i
+    - save_cache: 
+        key: "npm-packages"
+        paths:
+            - /src/node/modules
+    - run: npm run lint
 
   test:
     <<: *defaults
     steps:
     - checkout
-    - npm test
+    - restore_cache: 
+        keys: "npm-packages"
+    - run: npm i    
+    - run: npm run test
+    
+    
   analyse:   
     <<: *defaults
     steps:
     - checkout
-    - npm audit   
-        
+    - restore_cache: 
+        keys: "npm-packages"
+    - run: npm audit   
 
 workflows:
   BuildTestAnalyse-Jobs:
@@ -30,9 +41,9 @@ workflows:
       - build
       - test:
           requires: 
-            build
+           - build
       - analyse
           requires: 
-            test
+           - test
 
 
